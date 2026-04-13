@@ -1,70 +1,220 @@
 {
   "name": "auto-commit-mate",
-  "displayName": "Auto Commit Mate - ACM",
-  "description": "Automates tracking workflow, pushes changes to GitHub and enhances GitHub contributions without manual intervention.",
-  "version": "1.2.0",
+  "displayName": "Auto-Commit Mate++",
+  "description": "AI-powered developer work-log, commit classifier, report generator, and productivity tracker. Automatically tracks, summarizes, and reports what you worked on.",
+  "version": "2.0.0",
   "icon": "assets/extension-icon.png",
   "publisher": "Rahulnisanth",
   "engines": {
     "vscode": "^1.96.0"
   },
+  "categories": [
+    "Other",
+    "SCM Providers"
+  ],
   "activationEvents": [
     "onStartupFinished",
     "workspaceContains:.git"
   ],
-  "main": "./src/extension.js",
-  "type": "commonjs",
+  "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Auto Commit Mate - ACM",
+      "title": "Auto-Commit Mate++",
       "properties": {
-        "autoCommitMate.githubUsername": {
-          "type": "string",
-          "default": "",
-          "description": "GitHub Username for Auto Commit Mate",
+        "acm.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable all ACM tracking",
           "scope": "machine"
         },
-        "autoCommitMate.githubToken": {
+        "acm.githubUsername": {
           "type": "string",
           "default": "",
-          "description": "GitHub Personal Access Token (PAT)",
+          "description": "GitHub username (non-sensitive). Token is stored securely in Secret Storage.",
+          "scope": "machine"
+        },
+        "acm.additionalRepoPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Additional Git repository paths to track (beyond VS Code workspace folders)",
+          "scope": "machine"
+        },
+        "acm.commitIntervalMinutes": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "Interval in minutes between auto-commit log snapshots",
+          "scope": "machine"
+        },
+        "acm.idleThresholdMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Minutes of inactivity before marking the session as idle",
+          "scope": "machine"
+        },
+        "acm.riskThresholdLines": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "description": "Number of uncommitted lines that trigger a risk alert",
+          "scope": "machine"
+        },
+        "acm.riskThresholdMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "description": "Minutes without a commit before triggering a risk alert",
+          "scope": "machine"
+        },
+        "acm.syncEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic sync of work logs to GitHub Activity-Logger repo",
+          "scope": "machine"
+        },
+        "acm.syncFrequencyHours": {
+          "type": "number",
+          "default": 24,
+          "minimum": 1,
+          "description": "How often (in hours) to auto-sync to GitHub",
+          "scope": "machine"
+        },
+        "acm.logRetentionDays": {
+          "type": "number",
+          "default": 90,
+          "minimum": 7,
+          "description": "Number of days to retain local activity logs in ~/.acm/logs/",
+          "scope": "machine"
+        },
+        "acm.showStartupPrompt": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the ACM welcome prompt on VS Code startup (fix v1 bug #4)",
           "scope": "machine"
         }
       }
     },
     "commands": [
       {
-        "command": "extension.startAutoCommitting",
-        "title": "Start the Auto-Commit extension"
+        "command": "acm.start",
+        "title": "ACM: Start Auto-Committing",
+        "category": "Auto-Commit Mate++"
       },
       {
-        "command": "extension.setTimeDuration",
-        "title": "Set time duration for auto-committing logs"
+        "command": "acm.stop",
+        "title": "ACM: Stop Auto-Committing",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.setInterval",
+        "title": "ACM: Set Commit Interval",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.generateDaily",
+        "title": "ACM: Generate Daily Report",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.generateWeekly",
+        "title": "ACM: Generate Weekly Report",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.generateMonthly",
+        "title": "ACM: Generate Monthly Report",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.generateAppraisal",
+        "title": "ACM: Generate Appraisal Report",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.askQuestion",
+        "title": "ACM: Ask About My Work",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.syncNow",
+        "title": "ACM: Sync to GitHub Now",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.viewLog",
+        "title": "ACM: View Today's Activity Log",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.clearCredentials",
+        "title": "ACM: Clear Credentials",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.openSettings",
+        "title": "ACM: Open Settings",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acm.openSidebar",
+        "title": "ACM: Open Sidebar",
+        "category": "Auto-Commit Mate++"
+      },
+      {
+        "command": "acmSidebar.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "acmSidebar",
+          "name": "AUTO-COMMIT MATE++",
+          "icon": "$(clock)",
+          "contextualTitle": "ACM Activity"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "acmSidebar.refresh",
+          "when": "view == acmSidebar",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
+    "compile": "node esbuild.js",
+    "compile:prod": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run compile",
     "test": "vscode-test"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "@types/vscode": "^1.96.0",
+    "@types/uuid": "^10.0.0",
+    "@types/vscode": "^1.115.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.25.3",
     "eslint": "^9.16.0",
-    "open": "^10.1.0",
-    "vscode": "^1.1.37"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "axios": "^1.7.9"
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.7.9",
+    "uuid": "^11.1.0"
   },
-  "categories": [
-    "Other",
-    "SCM Providers"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Rahulnisanth/ACM.git"
@@ -78,6 +228,10 @@
     "auto commit",
     "vscode extension",
     "productivity",
-    "workflow"
+    "ai",
+    "gemini",
+    "work log",
+    "report generator",
+    "activity tracker"
   ]
 }
