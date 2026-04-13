@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import axios from 'axios';
 import { CredentialsManager } from '../auth/credentials';
 import { toDateString, toYearMonth } from '../utils/dateUtils';
+import { readJson, getLogsDir } from '../utils/storage';
+import { ActivityEvent } from '../types';
 
 const GLOBAL_REPO_NAME = 'Activity-Logger';
 
@@ -128,9 +131,25 @@ export class GitHubSync {
 
     const filePath = `logs/${yearMonth}/${day}.json`;
 
-    // Placeholder log content — in production this would read from ~/.acm/logs/
+    // Read real activity events from ~/.acm/logs/YYYY-MM-DD.json
+    const logsDir = getLogsDir();
+    const logFilePath = path.join(logsDir, `${dateStr}.json`);
+    const events = readJson<ActivityEvent[]>(logFilePath, []);
+
+    if (events.length === 0) {
+      vscode.window.showInformationMessage(
+        'ACM Sync: No activity logged today yet — nothing to push.',
+      );
+      return;
+    }
+
     const content = JSON.stringify(
-      { date: dateStr, syncedAt: new Date().toISOString() },
+      {
+        date: dateStr,
+        syncedAt: new Date().toISOString(),
+        eventCount: events.length,
+        events,
+      },
       null,
       2,
     );
@@ -152,7 +171,7 @@ export class GitHubSync {
       await axios.put(
         apiUrl,
         {
-          message: `ACM: Activity log for ${dateStr}`,
+          message: `ACM: Activity log for ${dateStr} (${events.length} events)`,
           content: encodedContent,
           ...(sha ? { sha } : {}),
         },

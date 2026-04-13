@@ -1,6 +1,6 @@
 {
   "name": "auto-commit-mate",
-  "displayName": "Auto-Commit Mate++",
+  "displayName": "ACM: Auto-Commit Mate++",
   "description": "AI-powered developer work-log, commit classifier, report generator, and productivity tracker. Automatically tracks, summarizes, and reports what you worked on.",
   "version": "2.0.0",
   "icon": "assets/extension-icon.png",
@@ -19,7 +19,7 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Auto-Commit Mate++",
+      "title": "ACM: Auto-Commit Mate++",
       "properties": {
         "acm.enabled": {
           "type": "boolean",
@@ -101,68 +101,68 @@
     "commands": [
       {
         "command": "acm.start",
-        "title": "ACM: Start Auto-Committing",
-        "category": "Auto-Commit Mate++"
+        "title": "Start Auto-Committing",
+        "category": "ACM"
       },
       {
         "command": "acm.stop",
-        "title": "ACM: Stop Auto-Committing",
-        "category": "Auto-Commit Mate++"
+        "title": "Stop Auto-Committing",
+        "category": "ACM"
       },
       {
         "command": "acm.setInterval",
-        "title": "ACM: Set Commit Interval",
-        "category": "Auto-Commit Mate++"
+        "title": "Set Commit Interval",
+        "category": "ACM"
       },
       {
         "command": "acm.generateDaily",
-        "title": "ACM: Generate Daily Report",
-        "category": "Auto-Commit Mate++"
+        "title": "Generate Daily Report",
+        "category": "ACM"
       },
       {
         "command": "acm.generateWeekly",
-        "title": "ACM: Generate Weekly Report",
-        "category": "Auto-Commit Mate++"
+        "title": "Generate Weekly Report",
+        "category": "ACM"
       },
       {
         "command": "acm.generateMonthly",
-        "title": "ACM: Generate Monthly Report",
-        "category": "Auto-Commit Mate++"
+        "title": "Generate Monthly Report",
+        "category": "ACM"
       },
       {
         "command": "acm.generateAppraisal",
-        "title": "ACM: Generate Appraisal Report",
-        "category": "Auto-Commit Mate++"
+        "title": "Generate Appraisal Report",
+        "category": "ACM"
       },
       {
         "command": "acm.askQuestion",
-        "title": "ACM: Ask About My Work",
-        "category": "Auto-Commit Mate++"
+        "title": "Ask About My Work",
+        "category": "ACM"
       },
       {
         "command": "acm.syncNow",
-        "title": "ACM: Sync to GitHub Now",
-        "category": "Auto-Commit Mate++"
+        "title": "Sync to GitHub Now",
+        "category": "ACM"
       },
       {
         "command": "acm.viewLog",
-        "title": "ACM: View Today's Activity Log",
-        "category": "Auto-Commit Mate++"
+        "title": "View Today's Activity Log",
+        "category": "ACM"
       },
       {
         "command": "acm.clearCredentials",
-        "title": "ACM: Clear Credentials",
-        "category": "Auto-Commit Mate++"
+        "title": "Clear Credentials",
+        "category": "ACM"
       },
       {
         "command": "acm.openSettings",
-        "title": "ACM: Open Settings",
-        "category": "Auto-Commit Mate++"
+        "title": "Open Settings",
+        "category": "ACM"
       },
       {
         "command": "acm.openSidebar",
-        "title": "ACM: Open Sidebar",
-        "category": "Auto-Commit Mate++"
+        "title": "Open Sidebar",
+        "category": "ACM"
       },
       {
         "command": "acmSidebar.refresh",

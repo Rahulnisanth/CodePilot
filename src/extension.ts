@@ -41,8 +41,8 @@ export async function activate(
   // Detect repos
   await repoManager.detectRepos();
 
-  // AI services
-  const geminiKey = (await context.secrets.get('acm.geminiApiKey')) ?? null;
+  // AI services — prompt for Gemini key if not yet stored
+  const geminiKey = await credentialsManager.ensureGeminiKey();
   const classifier = new CommitClassifier(geminiKey);
   const grouper = new CommitGrouper(geminiKey);
   const aiReporter = new AiReporter(geminiKey);
@@ -191,6 +191,18 @@ export async function activate(
           vscode.window.showInformationMessage(
             'ACM: No activity log for today yet.',
           );
+        }
+      },
+    ],
+    [
+      'acm.setGeminiKey',
+      async () => {
+        const newKey = await credentialsManager.setGeminiKey();
+        if (newKey) {
+          // Live-update all three AI services without requiring a reload
+          classifier.updateApiKey(newKey);
+          grouper.updateApiKey(newKey);
+          aiReporter.updateApiKey(newKey);
         }
       },
     ],

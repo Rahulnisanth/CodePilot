@@ -71,30 +71,93 @@ export class CredentialsManager {
   }
 
   /**
-   * Returns the stored Gemini API key or prompts the user.
+   * Returns the stored Gemini API key.
+   * Does NOT prompt — call ensureGeminiKey() for first-run or setGeminiKey() for
+   * explicit reconfiguration.
+   */
+  async getGeminiKey(): Promise<string | null> {
+    return (await this.secrets.getGeminiApiKey()) ?? null;
+  }
+
+  /**
+   * Checks for a stored Gemini key and prompts the user if one is not set.
+   * Shows a quick-pick with a "Get a key" shortcut before the input box.
+   * Returns the key string, or null if the user cancels.
    */
   async ensureGeminiKey(): Promise<string | null> {
-    let key = await this.secrets.getGeminiApiKey();
+    const existing = (await this.secrets.getGeminiApiKey()) ?? null;
+    if (existing) return existing;
 
-    if (!key) {
-      key = await vscode.window.showInputBox({
-        prompt: 'Enter your Google Gemini API Key (for AI features)',
-        placeHolder: 'AIza...',
-        password: true,
-        ignoreFocusOut: true,
-      });
+    return this.promptForGeminiKey(false);
+  }
 
-      if (!key) {
-        vscode.window.showWarningMessage(
-          'ACM: No Gemini API key — AI features will use keyword fallback.',
+  /**
+   * Explicitly prompts the user to enter/replace their Gemini API key.
+   * Called by the `acm.setGeminiKey` command.
+   */
+  async setGeminiKey(): Promise<string | null> {
+    return this.promptForGeminiKey(true);
+  }
+
+  /**
+   * Prompts the user to enter/replace their Gemini API key.
+   * Called by the `acm.setGeminiKey` command.
+   */
+  private async promptForGeminiKey(isUpdate: boolean): Promise<string | null> {
+    // Step 1 — inform & offer shortcut to get a key
+    const action = await vscode.window.showInformationMessage(
+      isUpdate
+        ? 'ACM: Update your Google Gemini API key. Get one free at aistudio.google.com'
+        : 'ACM needs a Gemini API key to power AI classification and report narratives. Get one free at aistudio.google.com',
+      { modal: false },
+      'Enter Key',
+      'Get a Key',
+      'Skip (use keyword fallback)',
+    );
+
+    if (action === 'Get a Key') {
+      vscode.env.openExternal(
+        vscode.Uri.parse('https://aistudio.google.com/apikey'),
+      );
+      // Ask again after they've had a chance to grab the key
+      const retry = await vscode.window.showInformationMessage(
+        'Once you have your key, click Enter Key to continue.',
+        { modal: false },
+        'Enter Key',
+        'Cancel',
+      );
+      if (retry !== 'Enter Key') return null;
+    } else if (action === 'Skip (use keyword fallback)' || !action) {
+      if (!isUpdate) {
+        vscode.window.showInformationMessage(
+          'ACM: Running without AI — commit classification will use keyword matching.',
         );
-        return null;
       }
-
-      await this.secrets.storeGeminiApiKey(key);
+      return null;
     }
 
-    return key;
+    // Step 2 — input box for the key
+    const key = await vscode.window.showInputBox({
+      title: 'Google Gemini API Key',
+      prompt: 'Paste your Gemini API key (starts with "AIza...")',
+      placeHolder: 'AIzaSy...',
+      password: true,
+      ignoreFocusOut: true,
+      validateInput: (v) => {
+        if (!v.trim()) return 'API key cannot be empty';
+        if (!v.startsWith('AIza'))
+          return 'Gemini API keys usually start with "AIza"';
+        return null;
+      },
+    });
+
+    if (!key) return null;
+
+    await this.secrets.storeGeminiApiKey(key.trim());
+    vscode.window.showInformationMessage(
+      '✅ ACM: Gemini API key saved. AI features are now active.',
+    );
+    return key.trim();
   }
 
   /**

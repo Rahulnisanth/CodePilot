@@ -73,7 +73,7 @@ Run any AI feature (e.g. generate a report) and you'll be prompted for a Gemini 
 
 ### Status Bar
 
-```
+```text
 ⏱ ACM: 4h 32m active today
 ```
 
@@ -81,7 +81,7 @@ Click to open the sidebar. Turns **amber** when uncommitted change risks are det
 
 ### Sidebar
 
-```
+```text
 AUTO-COMMIT MATE++
 ├── 📅 Today's Activity
 │   ├── Active Time: 4h 32m
@@ -139,7 +139,7 @@ Reports are saved to `~/.acm/reports/` and opened automatically after generation
 
 **Appraisal example:**
 
-```
+```text
 Cmd+Shift+P → ACM: Generate Appraisal Report
 Start date: 2026-01-01
 End date:   2026-03-31
@@ -175,7 +175,7 @@ End date:   2026-03-31
 
 ## Local Data Layout
 
-```
+```text
 ~/.acm/
 ├── logs/               ← Daily activity event files (JSON)
 ├── reports/            ← Generated reports (Markdown / JSON)

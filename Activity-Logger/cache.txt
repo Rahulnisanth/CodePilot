@@ -1,8 +1,0 @@
-CHANGELOG.md                                       |  6 +-
- package.json                                       |  2 +-
- src/auth/creds.js                                  | 76 ----------------------
- src/cmd/checkHistoryFolder.js                      | 25 -------
- src/cmd/startAutoCommitting.js                     |  4 +-
- .../autoCommit/commitAndPushToGlobalRepo.js        |  2 +-
- .../createGRepo/createGlobalRepoIfNotExists.js     |  2 +-
- 7 files changed, 8 insertions(+), 109 deletions(-)
