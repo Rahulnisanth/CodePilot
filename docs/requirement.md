@@ -26,7 +26,7 @@ It hooks into your coding activity in real time, classifies your commits using G
 | Language        | TypeScript                                                         |
 | Runtime         | Node.js ≥ 18.x (in-process within extension)                       |
 | Extension API   | VS Code `^1.96.0`                                                  |
-| AI / LLM        | Google Gemini API (`gemini-2.0-flash`) via `@google/generative-ai` |
+| AI / LLM        | Google Gemini API (`gemini-2.5-flash`) via `@google/generative-ai` |
 | Version Control | Git CLI via `child_process.exec` (async, non-blocking)             |
 | Remote Sync     | GitHub REST API v3 via `axios`                                     |
 | Auth Storage    | VS Code Secret Storage (`context.secrets`)                         |

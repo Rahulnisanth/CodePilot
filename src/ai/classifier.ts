@@ -90,7 +90,7 @@ export class CommitClassifier {
     try {
       const genAI = new GoogleGenerativeAI(this.geminiApiKey!);
       const model = genAI.getGenerativeModel({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         systemInstruction: CLASSIFIER_SYSTEM_PROMPT,
       });
 
