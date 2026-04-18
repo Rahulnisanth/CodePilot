@@ -34,6 +34,8 @@ export class ChatPanel {
     this.panel.webview.onDidReceiveMessage(async (message) => {
       if (message.type === 'question') {
         await this.handleQuestion(message.text);
+      } else if (message.type === 'clear') {
+        this.conversationHistory = [];
       }
     });
 
@@ -46,8 +48,13 @@ export class ChatPanel {
     context: vscode.ExtensionContext,
     aiReporter: AiReporter,
     workUnits: WorkUnit[],
+    startFresh = false,
   ): void {
     if (ChatPanel.currentPanel) {
+      if (startFresh) {
+        ChatPanel.currentPanel.conversationHistory = [];
+        ChatPanel.currentPanel.panel.webview.postMessage({ type: 'reset' });
+      }
       ChatPanel.currentPanel.panel.reveal(vscode.ViewColumn.Two);
       return;
     }
@@ -662,6 +669,11 @@ export class ChatPanel {
             messagesEl.innerHTML = '';
             if (!history || history.length === 0) return;
             history.forEach((entry) => appendMessage(entry.role, entry.content));
+          }
+
+          // Backend-initiated reset (e.g. when show() is called with startFresh=true)
+          if (type === 'reset') {
+            clearChat();
           }
 
           if (type === 'answer') {
