@@ -12,11 +12,11 @@ import { CommitGrouper } from './ai/grouper';
 import { AiReporter } from './ai/reporter';
 import { ReportManager } from './reports/reportManager';
 import { GitHubSync } from './sync/githubSync';
-import { CodeBrainStatusBar } from './ui/statusBarItem';
-import { CodeBrainSidebarProvider } from './ui/sidebarProvider';
+import { CodeBrainProStatusBar } from './ui/statusBarItem';
+import { CodeBrainProSidebarProvider } from './ui/sidebarProvider';
 import { ChatPanel } from './ui/chatPanel';
 import { CommitRecord, WorkUnit, RiskEvent } from './types';
-import { ensureCodeBrainDirs } from './utils/storage';
+import { ensureCodeBrainProDirs } from './utils/storage';
 
 // In-memory stores (repopulated on each activation via commit poller)
 const allCommits: CommitRecord[] = [];
@@ -26,10 +26,10 @@ const activeRisks: RiskEvent[] = [];
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
-  console.log('CodeBrain activated!');
+  console.log('CodeBrainPro activated!');
 
   // Storage directories
-  ensureCodeBrainDirs();
+  ensureCodeBrainProDirs();
 
   // Core services
   const credentialsManager = new CredentialsManager(context);
@@ -48,18 +48,18 @@ export async function activate(
   const aiReporter = new AiReporter(geminiKey);
 
   // Status Bar
-  const statusBar = new CodeBrainStatusBar(context);
+  const statusBar = new CodeBrainProStatusBar(context);
   statusBar.setActiveMinutesProvider(() =>
     sessionManager.getTotalActiveMinutesToday(),
   );
   statusBar.startUpdating();
 
   // Sidebar
-  const sidebarProvider = new CodeBrainSidebarProvider(
+  const sidebarProvider = new CodeBrainProSidebarProvider(
     sessionManager,
     repoManager,
   );
-  const treeView = vscode.window.createTreeView('codeBrainSidebar', {
+  const treeView = vscode.window.createTreeView('codeBrainProSidebar', {
     treeDataProvider: sidebarProvider,
     showCollapseAll: true,
   });
@@ -67,7 +67,7 @@ export async function activate(
 
   // Sidebar refresh command
   context.subscriptions.push(
-    vscode.commands.registerCommand('codeBrainSidebar.refresh', () => {
+    vscode.commands.registerCommand('codeBrainProSidebar.refresh', () => {
       sidebarProvider.refresh();
     }),
   );
@@ -82,7 +82,7 @@ export async function activate(
     logWriter,
   );
 
-  const config = vscode.workspace.getConfiguration('codeBrain');
+  const config = vscode.workspace.getConfiguration('codeBrainPro');
   if (config.get<boolean>('enabled', true)) {
     activityTracker.activate();
   }
@@ -150,23 +150,23 @@ export async function activate(
   // Commands
   const commands: [string, () => void | Promise<void>][] = [
     [
-      'codeBrain.start',
+      'codeBrainPro.start',
       async () => {
         await repoManager.detectRepos();
         activityTracker.activate();
-        vscode.window.showInformationMessage('CodeBrain: Tracking started.');
+        vscode.window.showInformationMessage('CodeBrainPro: Tracking started.');
       },
     ],
     [
-      'codeBrain.stop',
+      'codeBrainPro.stop',
       () => {
         vscode.window.showInformationMessage(
-          'CodeBrain: Tracking paused. Use "CodeBrain: Start" to resume.',
+          'CodeBrainPro: Tracking paused. Use "CodeBrainPro: Start" to resume.',
         );
       },
     ],
     [
-      'codeBrain.setInterval',
+      'codeBrainPro.setInterval',
       async () => {
         const value = await vscode.window.showInputBox({
           prompt: 'Set auto-commit interval (minutes)',
@@ -183,37 +183,37 @@ export async function activate(
             vscode.ConfigurationTarget.Global,
           );
           vscode.window.showInformationMessage(
-            `CodeBrain: Interval set to ${value} minutes.`,
+            `CodeBrainPro: Interval set to ${value} minutes.`,
           );
         }
       },
     ],
-    ['codeBrain.generateDaily', () => reportManager.generateDaily()],
-    ['codeBrain.generateWeekly', () => reportManager.generateWeekly()],
-    ['codeBrain.generateMonthly', () => reportManager.generateMonthly()],
-    ['codeBrain.generateAppraisal', () => reportManager.generateAppraisal()],
+    ['codeBrainPro.generateDaily', () => reportManager.generateDaily()],
+    ['codeBrainPro.generateWeekly', () => reportManager.generateWeekly()],
+    ['codeBrainPro.generateMonthly', () => reportManager.generateMonthly()],
+    ['codeBrainPro.generateAppraisal', () => reportManager.generateAppraisal()],
     [
-      'codeBrain.askQuestion',
+      'codeBrainPro.askQuestion',
       () => {
         ChatPanel.show(context, aiReporter, allWorkUnits);
       },
     ],
-    ['codeBrain.syncNow', () => githubSync.syncNow()],
+    ['codeBrainPro.syncNow', () => githubSync.syncNow()],
     [
-      'codeBrain.viewLog',
+      'codeBrainPro.viewLog',
       async () => {
         const logPath = logWriter.getTodayLogPath();
         try {
           await vscode.window.showTextDocument(vscode.Uri.file(logPath));
         } catch {
           vscode.window.showInformationMessage(
-            'CodeBrain: No activity log for today yet.',
+            'CodeBrainPro: No activity log for today yet.',
           );
         }
       },
     ],
     [
-      'codeBrain.setGeminiKey',
+      'codeBrainPro.setGeminiKey',
       async () => {
         const newKey = await credentialsManager.setGeminiKey();
         if (newKey) {
@@ -224,18 +224,21 @@ export async function activate(
         }
       },
     ],
-    ['codeBrain.clearCredentials', () => credentialsManager.clearCredentials()],
     [
-      'codeBrain.openSettings',
+      'codeBrainPro.clearCredentials',
+      () => credentialsManager.clearCredentials(),
+    ],
+    [
+      'codeBrainPro.openSettings',
       () =>
         vscode.commands.executeCommand(
           'workbench.action.openSettings',
-          'codeBrain',
+          'codeBrainPro',
         ),
     ],
     [
-      'codeBrain.openSidebar',
-      () => vscode.commands.executeCommand('codeBrainSidebar.focus'),
+      'codeBrainPro.openSidebar',
+      () => vscode.commands.executeCommand('codeBrainProSidebar.focus'),
     ],
   ];
 
@@ -246,12 +249,12 @@ export async function activate(
   // Start-up Prompt
   if (config.get<boolean>('showStartupPrompt', true)) {
     const selection = await vscode.window.showInformationMessage(
-      '🚀 CodeBrain is active! AI-powered activity tracking enabled.',
+      '🚀 CodeBrainPro is active! AI-powered activity tracking enabled.',
       'Configure',
       "Don't show again",
     );
     if (selection === 'Configure') {
-      vscode.commands.executeCommand('codeBrain.openSettings');
+      vscode.commands.executeCommand('codeBrainPro.openSettings');
     } else if (selection === "Don't show again") {
       await config.update(
         'showStartupPrompt',

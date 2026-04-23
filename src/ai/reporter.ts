@@ -52,7 +52,7 @@ export class AiReporter {
    */
   async answerQuestion(question: string, workContext: string): Promise<string> {
     if (!this.geminiApiKey) {
-      return 'AI features are unavailable — no Gemini API key set. Run "CodeBrain: Open Settings" to configure.';
+      return 'AI features are unavailable — no Gemini API key set. Run "CodeBrainPro: Open Settings" to configure.';
     }
 
     try {
@@ -60,7 +60,7 @@ export class AiReporter {
       const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
       const prompt = `
-      You are CodeBrain, a personal developer productivity assistant.
+      You are CodeBrainPro, a personal developer productivity assistant.
       Answer this question about the developer's recent work based ONLY on the provided context.
       Be conversational, concise, and helpful.
 

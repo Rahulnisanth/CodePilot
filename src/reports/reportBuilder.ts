@@ -1,6 +1,6 @@
 import { ActivityEvent, CommitRecord, WorkUnit, RiskEvent } from '../types';
 import { toDateString } from '../utils/dateUtils';
-import { getLogsDir, getCodeBrainDir, readJson } from '../utils/storage';
+import { getLogsDir, getCodeBrainProDir, readJson } from '../utils/storage';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -52,7 +52,7 @@ export class ReportBuilder {
    * Load risk events for a date range.
    */
   loadRisks(startDate: Date, endDate: Date): RiskEvent[] {
-    const risksFile = path.join(getCodeBrainDir(), 'risks.json');
+    const risksFile = path.join(getCodeBrainProDir(), 'risks.json');
     const all = readJson<RiskEvent[]>(risksFile, []);
     return all.filter((r) => {
       const t = new Date(r.timestamp);

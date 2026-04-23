@@ -1,6 +1,6 @@
 {
-  "name": "code-brain",
-  "displayName": "CodeBrain",
+  "name": "code-brain-pro",
+  "displayName": "CodeBrainPro",
   "description": "AI-powered developer work-log, commit classifier, report generator, and productivity tracker. Automatically tracks, summarizes, and reports what you worked on.",
   "version": "1.0.0",
   "icon": "assets/extension-icon.png",
@@ -19,21 +19,21 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "CodeBrain",
+      "title": "CodeBrainPro",
       "properties": {
-        "codeBrain.enabled": {
+        "codeBrainPro.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable/disable all code brain tracking",
+          "description": "Enable/disable all code brain pro tracking",
           "scope": "machine"
         },
-        "codeBrain.githubUsername": {
+        "codeBrainPro.githubUsername": {
           "type": "string",
           "default": "",
           "description": "GitHub username (non-sensitive). Token is stored securely in Secret Storage.",
           "scope": "machine"
         },
-        "codeBrain.additionalRepoPaths": {
+        "codeBrainPro.additionalRepoPaths": {
           "type": "array",
           "items": {
             "type": "string"
@@ -42,130 +42,130 @@
           "description": "Additional Git repository paths to track (beyond VS Code workspace folders)",
           "scope": "machine"
         },
-        "codeBrain.commitIntervalMinutes": {
+        "codeBrainPro.commitIntervalMinutes": {
           "type": "number",
           "default": 30,
           "minimum": 1,
           "description": "Interval in minutes between auto-commit log snapshots",
           "scope": "machine"
         },
-        "codeBrain.idleThresholdMinutes": {
+        "codeBrainPro.idleThresholdMinutes": {
           "type": "number",
           "default": 5,
           "minimum": 1,
           "description": "Minutes of inactivity before marking the session as idle",
           "scope": "machine"
         },
-        "codeBrain.riskThresholdLines": {
+        "codeBrainPro.riskThresholdLines": {
           "type": "number",
           "default": 50,
           "minimum": 1,
           "description": "Number of uncommitted lines that trigger a risk alert",
           "scope": "machine"
         },
-        "codeBrain.riskThresholdMinutes": {
+        "codeBrainPro.riskThresholdMinutes": {
           "type": "number",
           "default": 60,
           "minimum": 1,
           "description": "Minutes without a commit before triggering a risk alert",
           "scope": "machine"
         },
-        "codeBrain.syncEnabled": {
+        "codeBrainPro.syncEnabled": {
           "type": "boolean",
           "default": false,
-          "description": "Enable automatic sync of work logs to GitHub codebrain-logs repo",
+          "description": "Enable automatic sync of work logs to GitHub code-brain-pro-logs repo",
           "scope": "machine"
         },
-        "codeBrain.syncFrequencyHours": {
+        "codeBrainPro.syncFrequencyHours": {
           "type": "number",
           "default": 24,
           "minimum": 1,
           "description": "How often (in hours) to auto-sync to GitHub",
           "scope": "machine"
         },
-        "codeBrain.logRetentionDays": {
+        "codeBrainPro.logRetentionDays": {
           "type": "number",
           "default": 90,
           "minimum": 7,
-          "description": "Number of days to retain local activity logs in ~/.codeBrain/logs/",
+          "description": "Number of days to retain local activity logs in ~/.codeBrainPro/logs/",
           "scope": "machine"
         },
-        "codeBrain.showStartupPrompt": {
+        "codeBrainPro.showStartupPrompt": {
           "type": "boolean",
           "default": true,
-          "description": "Show the CodeBrain welcome prompt on VS Code startup",
+          "description": "Show the CodeBrainPro welcome prompt on VS Code startup",
           "scope": "machine"
         }
       }
     },
     "commands": [
       {
-        "command": "codeBrain.start",
+        "command": "codeBrainPro.start",
         "title": "Start",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.stop",
+        "command": "codeBrainPro.stop",
         "title": "Stop",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.setInterval",
+        "command": "codeBrainPro.setInterval",
         "title": "Set Commit Interval",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.generateDaily",
+        "command": "codeBrainPro.generateDaily",
         "title": "Generate Daily Report",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.generateWeekly",
+        "command": "codeBrainPro.generateWeekly",
         "title": "Generate Weekly Report",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.generateMonthly",
+        "command": "codeBrainPro.generateMonthly",
         "title": "Generate Monthly Report",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.generateAppraisal",
+        "command": "codeBrainPro.generateAppraisal",
         "title": "Generate Appraisal Report",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.askQuestion",
+        "command": "codeBrainPro.askQuestion",
         "title": "Ask About My Work",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.syncNow",
+        "command": "codeBrainPro.syncNow",
         "title": "Sync to GitHub Now",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.viewLog",
+        "command": "codeBrainPro.viewLog",
         "title": "View Today's Activity Log",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.clearCredentials",
+        "command": "codeBrainPro.clearCredentials",
         "title": "Clear Credentials",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.openSettings",
+        "command": "codeBrainPro.openSettings",
         "title": "Open Settings",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrain.openSidebar",
+        "command": "codeBrainPro.openSidebar",
         "title": "Open Sidebar",
-        "category": "CodeBrain"
+        "category": "CodeBrainPro"
       },
       {
-        "command": "codeBrainSidebar.refresh",
+        "command": "codeBrainProSidebar.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
       }
@@ -173,18 +173,18 @@
     "views": {
       "explorer": [
         {
-          "id": "codeBrainSidebar",
+          "id": "codeBrainProSidebar",
           "name": "Activity",
           "icon": "$(clock)",
-          "contextualTitle": "CODE BRAIN"
+          "contextualTitle": "CODE BRAIN PRO"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "codeBrainSidebar.refresh",
-          "when": "view == codeBrainSidebar",
+          "command": "codeBrainProSidebar.refresh",
+          "when": "view == codeBrainProSidebar",
           "group": "navigation"
         }
       ]
@@ -217,10 +217,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Rahulnisanth/CodeBrain.git"
+    "url": "https://github.com/Rahulnisanth/CodeBrainPro.git"
   },
   "bugs": {
-    "url": "https://github.com/Rahulnisanth/CodeBrain/issues"
+    "url": "https://github.com/Rahulnisanth/CodeBrainPro/issues"
   },
   "license": "MIT",
   "keywords": [

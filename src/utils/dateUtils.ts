@@ -1,5 +1,5 @@
 /**
- * Date & time utilities for CodeBrain.
+ * Date & time utilities for CodeBrainPro.
  */
 
 /**

@@ -6,7 +6,7 @@ import { CommitRecord, WorkUnit } from '../types';
 import { AiReporter } from '../ai/reporter';
 import { toMarkdown } from './exporters/markdownExporter';
 import { toJson } from './exporters/jsonExporter';
-import { getReportsDir, ensureCodeBrainDirs } from '../utils/storage';
+import { getReportsDir, ensureCodeBrainProDirs } from '../utils/storage';
 import {
   toDateString,
   startOfDay,
@@ -82,7 +82,7 @@ export class ReportManager {
 
     if (!startInput || !endInput) {
       vscode.window.showErrorMessage(
-        'CodeBrain: Start and end dates are required.',
+        'CodeBrainPro: Start and end dates are required.',
       );
       return;
     }
@@ -92,7 +92,7 @@ export class ReportManager {
 
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       vscode.window.showErrorMessage(
-        'CodeBrain: Invalid date format. Use YYYY-MM-DD.',
+        'CodeBrainPro: Invalid date format. Use YYYY-MM-DD.',
       );
       return;
     }
@@ -111,7 +111,7 @@ export class ReportManager {
     await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: `CodeBrain: Generating ${type} report...`,
+        title: `CodeBrainPro: Generating ${type} report...`,
         cancellable: false,
       },
       async () => {
@@ -167,7 +167,7 @@ export class ReportManager {
           await this.saveReport(type, reportData, format, start);
         } catch (error) {
           vscode.window.showErrorMessage(
-            `CodeBrain: Failed to generate report — ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `CodeBrainPro: Failed to generate report — ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       },
@@ -180,7 +180,7 @@ export class ReportManager {
     format: ExportFormat,
     date: Date,
   ): Promise<void> {
-    ensureCodeBrainDirs();
+    ensureCodeBrainProDirs();
     const reportsDir = getReportsDir();
     const dateStr = toDateString(date);
     const ext = format === 'markdown' ? '.md' : '.json';
@@ -191,7 +191,7 @@ export class ReportManager {
     fs.writeFileSync(filePath, content, 'utf-8');
 
     const open = await vscode.window.showInformationMessage(
-      `CodeBrain: ${type} report saved to ${filePath}`,
+      `CodeBrainPro: ${type} report saved to ${filePath}`,
       'Open Report',
     );
 

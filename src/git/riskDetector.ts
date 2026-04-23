@@ -3,7 +3,7 @@ import { GitClient } from './gitClient';
 import { RepoManager } from '../repos/repoManager';
 import { RiskEvent } from '../types';
 import { toISO } from '../utils/dateUtils';
-import { appendToJsonArray, getCodeBrainDir } from '../utils/storage';
+import { appendToJsonArray, getCodeBrainProDir } from '../utils/storage';
 import * as path from 'path';
 
 /**
@@ -48,7 +48,7 @@ export class RiskDetector {
   }
 
   private async checkRisks(): Promise<void> {
-    const config = vscode.workspace.getConfiguration('codeBrain');
+    const config = vscode.workspace.getConfiguration('codeBrainPro');
     const riskThresholdLines = config.get<number>('riskThresholdLines', 50);
     const riskThresholdMinutes = config.get<number>('riskThresholdMinutes', 60);
 
@@ -90,11 +90,11 @@ export class RiskDetector {
           };
 
           // Log the risk event
-          const risksFile = path.join(getCodeBrainDir(), 'risks.json');
+          const risksFile = path.join(getCodeBrainProDir(), 'risks.json');
           appendToJsonArray<RiskEvent>(risksFile, riskEvent);
 
           // Show VS Code warning
-          const msg = `⚠️ CodeBrain Risk: ${repo.repoName} has ${linesChanged} uncommitted lines for ${minutesSinceLastCommit}m`;
+          const msg = `⚠️ CodeBrainPro Risk: ${repo.repoName} has ${linesChanged} uncommitted lines for ${minutesSinceLastCommit}m`;
           vscode.window
             .showWarningMessage(msg, 'Open Source Control')
             .then((choice) => {

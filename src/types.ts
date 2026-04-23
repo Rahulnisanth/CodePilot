@@ -1,5 +1,5 @@
 /**
- * Core data models for CodeBrain.
+ * Core data models for CodeBrainPro.
  */
 
 export type WorkType =

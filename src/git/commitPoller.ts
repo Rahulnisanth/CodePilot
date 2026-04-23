@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { GitClient, CommitInfo } from './gitClient';
 import { RepoManager } from '../repos/repoManager';
 import { CommitRecord } from '../types';
-import { writeJson, readJson, getCodeBrainDir } from '../utils/storage';
+import { writeJson, readJson, getCodeBrainProDir } from '../utils/storage';
 import * as path from 'path';
 
 type CommitListener = (commit: CommitRecord) => void;
@@ -22,7 +22,7 @@ export class CommitPoller {
     private readonly gitClient: GitClient,
     private readonly repoManager: RepoManager,
   ) {
-    this.seenCommitsFile = path.join(getCodeBrainDir(), 'seen-commits.json');
+    this.seenCommitsFile = path.join(getCodeBrainProDir(), 'seen-commits.json');
     // Load previously seen commits to persist across restarts
     const stored = readJson<Record<string, string[]>>(this.seenCommitsFile, {});
     Object.entries(stored).forEach(([repo, hashes]) => {

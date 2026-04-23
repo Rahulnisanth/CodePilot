@@ -32,7 +32,7 @@ export class RepoManager {
     workspaceFolders.forEach((f) => paths.push(f.uri.fsPath));
 
     // User-configured additional repo paths
-    const config = vscode.workspace.getConfiguration('codeBrain');
+    const config = vscode.workspace.getConfiguration('codeBrainPro');
     const additionalPaths = config.get<string[]>('additionalRepoPaths', []);
     additionalPaths.forEach((p) => paths.push(p));
 

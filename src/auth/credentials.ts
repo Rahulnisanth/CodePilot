@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { SecretsManager } from '../utils/secrets';
 
 /**
- * Manages GitHub & Gemini credential storage for CodeBrain.
+ * Manages GitHub & Gemini credential storage for CodeBrainPro.
  * All secrets are stored in vscode.SecretStorage — never in plaintext settings.
  */
 export class CredentialsManager {
@@ -19,7 +19,7 @@ export class CredentialsManager {
     username: string;
     token: string;
   } | null> {
-    const config = vscode.workspace.getConfiguration('codeBrain');
+    const config = vscode.workspace.getConfiguration('codeBrainPro');
     let username = config.get<string>('githubUsername', '');
     let token = await this.secrets.getGithubToken();
 
@@ -51,7 +51,9 @@ export class CredentialsManager {
     });
 
     if (!username) {
-      vscode.window.showErrorMessage('CodeBrain: GitHub username is required.');
+      vscode.window.showErrorMessage(
+        'CodeBrainPro: GitHub username is required.',
+      );
       return null;
     }
 
@@ -63,7 +65,7 @@ export class CredentialsManager {
     });
 
     if (!token) {
-      vscode.window.showErrorMessage('CodeBrain: GitHub PAT is required.');
+      vscode.window.showErrorMessage('CodeBrainPro: GitHub PAT is required.');
       return null;
     }
 
@@ -93,7 +95,7 @@ export class CredentialsManager {
 
   /**
    * Explicitly prompts the user to enter/replace their Gemini API key.
-   * Called by the `codeBrainsetGeminiKey` command.
+   * Called by the `codeBrainProsetGeminiKey` command.
    */
   async setGeminiKey(): Promise<string | null> {
     return this.promptForGeminiKey(true);
@@ -101,14 +103,14 @@ export class CredentialsManager {
 
   /**
    * Prompts the user to enter/replace their Gemini API key.
-   * Called by the `codeBrainsetGeminiKey` command.
+   * Called by the `codeBrainProsetGeminiKey` command.
    */
   private async promptForGeminiKey(isUpdate: boolean): Promise<string | null> {
     // Step 1 — inform & offer shortcut to get a key
     const action = await vscode.window.showInformationMessage(
       isUpdate
-        ? 'CodeBrain: Update your Google Gemini API key. Get one free at aistudio.google.com'
-        : 'CodeBrain needs a Gemini API key to power AI classification and report narratives. Get one free at aistudio.google.com',
+        ? 'CodeBrainPro: Update your Google Gemini API key. Get one free at aistudio.google.com'
+        : 'CodeBrainPro needs a Gemini API key to power AI classification and report narratives. Get one free at aistudio.google.com',
       { modal: false },
       'Enter Key',
       'Get a Key',
@@ -130,7 +132,7 @@ export class CredentialsManager {
     } else if (action === 'Skip (use keyword fallback)' || !action) {
       if (!isUpdate) {
         vscode.window.showInformationMessage(
-          'CodeBrain: Running without AI — commit classification will use keyword matching.',
+          'CodeBrainPro: Running without AI — commit classification will use keyword matching.',
         );
       }
       return null;
@@ -155,7 +157,7 @@ export class CredentialsManager {
 
     await this.secrets.storeGeminiApiKey(key.trim());
     vscode.window.showInformationMessage(
-      'CodeBrain: Gemini API key saved. AI features are now active.',
+      'CodeBrainPro: Gemini API key saved. AI features are now active.',
     );
     return key.trim();
   }
@@ -165,14 +167,14 @@ export class CredentialsManager {
    */
   async clearCredentials(): Promise<void> {
     await this.secrets.clearAll();
-    const config = vscode.workspace.getConfiguration('codeBrain');
+    const config = vscode.workspace.getConfiguration('codeBrainPro');
     await config.update(
       'githubUsername',
       '',
       vscode.ConfigurationTarget.Global,
     );
     vscode.window.showInformationMessage(
-      '🗑️ CodeBrain: All credentials cleared. You will be prompted again on next use.',
+      '🗑️ CodeBrainPro: All credentials cleared. You will be prompted again on next use.',
     );
   }
 }

@@ -109,7 +109,7 @@ export class ActivityTracker {
   }
 
   private checkIdle(): void {
-    const config = vscode.workspace.getConfiguration('codeBrain');
+    const config = vscode.workspace.getConfiguration('codeBrainPro');
     const idleThresholdMs =
       config.get<number>('idleThresholdMinutes', 5) * 60 * 1000;
     const elapsed = Date.now() - this.lastEventTime;

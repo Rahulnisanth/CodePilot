@@ -1,7 +1,7 @@
 import { WorkType } from '../types';
 
 /**
- * All Gemini prompt templates for CodeBrain.
+ * All Gemini prompt templates for CodeBrainPro.
  */
 
 export const CLASSIFIER_SYSTEM_PROMPT = `
@@ -79,7 +79,7 @@ export function buildReporterPrompt(
 
 export function buildQueryPrompt(question: string, context: string): string {
   return `
-  You are CodeBrain, a personal developer productivity assistant.
+  You are CodeBrainPro, a personal developer productivity assistant.
   Answer this question about the developer's recent work based ONLY on the provided context. Be conversational, concise, and helpful.
 
   Work context:
