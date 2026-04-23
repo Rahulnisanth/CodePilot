@@ -2,11 +2,11 @@
   "name": "code-pilot",
   "displayName": "CodePilot",
   "description": "AI-powered developer work-log, commit classifier, report generator, and productivity tracker. Automatically tracks, summarizes, and reports what you worked on.",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "icon": "assets/extension-icon.png",
-  "publisher": "Rahulnisanth",
+  "publisher": "rahul-nisanth",
   "engines": {
-    "vscode": "^1.96.0"
+    "vscode": "^1.115.0"
   },
   "categories": [
     "Other",
