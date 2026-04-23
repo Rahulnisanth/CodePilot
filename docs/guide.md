@@ -459,28 +459,6 @@ CodeBrainPro activates when VS Code detects a `.git` folder. Make sure:
 
 ---
 
-## Changelog
-
-### v1.0.0 — Initial Release
-
-- AI-powered commit classification via Google Gemini
-- Smart commit grouper into logical Work Units
-- Real-time activity tracking (edit and focus events)
-- Daily / Weekly / Monthly / Appraisal report generation
-- Natural language Q&A chat panel
-- Multi-repo support
-- Risk detector with VS Code notifications
-- Live status bar with active time counter
-- Sidebar tree view
-- Optional GitHub sync to code-brain-pro-logs repo
-- Secure credential storage via VS Code Secret Storage
-
-### v1.0.1 — Fix
-
-- Update VS Code version requirement to ^1.115.0
-
----
-
 ## Privacy & Security
 
 | Concern                      | CodeBrainPro Behaviour                                                |
