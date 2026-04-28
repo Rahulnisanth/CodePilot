@@ -12,3 +12,7 @@
 
 - **docs:** Clarify GitHub PAT requirement to use Classic token with all repo scopes in README and User Guide
 - **fix:** Update credential prompt text and placeholder in `src/auth/credentials.ts` to specify GitHub Personal Access Token (Classic) with all repo scopes
+
+## 1.0.4 (2026-04-28)
+
+- **fix:** Bug fixes and performance improvments
