@@ -69,7 +69,7 @@ src/
 ├── sync/
 │   └── githubSync.ts         # Push logs/reports to GitHub
 ├── auth/
-│   └── credentials.ts        # GitHub PAT + Gemini key via SecretStorage
+│   └── credentials.ts        # GitHub PAT (Classic) + Gemini key via SecretStorage
 ├── ui/
 │   ├── statusBarItem.ts      # Live status bar widget
 │   ├── sidebarProvider.ts    # VS Code TreeDataProvider
@@ -167,15 +167,15 @@ git log -1 --pretty=format:"%ad" --date=iso  # last commit time
 
 All secrets are stored exclusively in VS Code Secret Storage (`context.secrets`) — never in plaintext settings or `globalState`.
 
-| Secret          | Key                           | Storage                          |
-| --------------- | ----------------------------- | -------------------------------- |
-| GitHub PAT      | `codeBrainPro.githubToken`    | `context.secrets`                |
-| Gemini API Key  | `codeBrainPro.geminiApiKey`   | `context.secrets`                |
-| GitHub username | `codeBrainPro.githubUsername` | VS Code settings (non-sensitive) |
+| Secret               | Key                           | Storage                          |
+| -------------------- | ----------------------------- | -------------------------------- |
+| GitHub PAT (Classic) | `codeBrainPro.githubToken`    | `context.secrets`                |
+| Gemini API Key       | `codeBrainPro.geminiApiKey`   | `context.secrets`                |
+| GitHub username      | `codeBrainPro.githubUsername` | VS Code settings (non-sensitive) |
 
 **Flows:**
 
-- On first use, prompts user for GitHub username + PAT via secure masked `showInputBox`
+- On first use, prompts user for GitHub username + PAT (Classic) via secure masked `showInputBox`
 - On first AI feature use, prompts user for Gemini API key
 - `codeBrainPro.clearCredentials` command wipes all stored secrets and resets username
 

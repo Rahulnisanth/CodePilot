@@ -62,18 +62,18 @@ Click **Configure** to open Settings, or dismiss and set up on demand.
 
 ### Step 1 — Add Your GitHub Credentials
 
-CodeBrainPro needs a GitHub Personal Access Token (PAT) to sync your activity logs.
+CodeBrainPro needs a GitHub Personal Access Token (Classic) to sync your activity logs.
 
 1. Run command: `CodeBrainPro: Sync to GitHub Now` (or any sync action)
 2. You'll be prompted:
    - **GitHub username** — your GitHub handle
-   - **GitHub PAT** — paste your token (it's stored securely, never in plain text)
+   - **GitHub PAT (Classic)** — paste your token (it's stored securely, never in plain text)
 
-**How to create a GitHub PAT:**
+**How to create a GitHub Personal Access Token (Classic):**
 
 1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
 2. Click **Generate new token (classic)**
-3. Select scopes: `repo` (full control of private repos)
+3. Select all `repo` scopes (check the top-level `repo` checkbox, which includes all sub-scopes)
 4. Copy the token and paste it when CodeBrainPro prompts you
 
 > **Security note:** Your token is stored in VS Code Secret Storage — the same secure vault used by the GitHub Cobrain extension. It is never written to any settings file.
@@ -180,7 +180,7 @@ Access all commands via `Cmd+Shift+P` and type `CodeBrainPro:`.
 | `CodeBrainPro: Ask About My Work`         | Open the AI chat panel                                     |
 | `CodeBrainPro: Sync to GitHub Now`        | Push activity logs to your GitHub code-brain-pro-logs repo |
 | `CodeBrainPro: View Today's Activity Log` | Open today's raw JSON activity log                         |
-| `CodeBrainPro: Clear Credentials`         | Wipe stored GitHub PAT and Gemini key                      |
+| `CodeBrainPro: Clear Credentials`         | Wipe stored GitHub PAT (Classic) and Gemini key            |
 | `CodeBrainPro: Open Settings`             | Jump to CodeBrainPro settings                              |
 | `CodeBrainPro: Open Sidebar`              | Focus the CodeBrainPro sidebar panel                       |
 
@@ -433,10 +433,10 @@ Make sure:
 
 ### GitHub sync failing
 
-- Verify your PAT has `repo` scope on GitHub
+- Verify your PAT (Classic) has all `repo` scopes on GitHub
 - Run `CodeBrainPro: Clear Credentials` and re-enter your token
 - Check your internet connection
-- Ensure your PAT hasn't expired
+- Ensure your PAT (Classic) hasn't expired
 
 ### Reports showing 0 activity
 
@@ -465,7 +465,7 @@ CodeBrainPro activates when VS Code detects a `.git` folder. Make sure:
 | ---------------------------- | --------------------------------------------------------------------- |
 | Source code                  | **Never sent anywhere.** Stays on your machine.                       |
 | Commit messages & diff stats | Sent to Gemini API for classification (optional, can disable AI)      |
-| GitHub PAT                   | Stored in VS Code Secret Storage, never in plaintext                  |
+| GitHub PAT (Classic)         | Stored in VS Code Secret Storage, never in plaintext                  |
 | Gemini API key               | Stored in VS Code Secret Storage, never in plaintext                  |
 | Activity logs                | Stored locally at `~/.codeBrainPro/`. Optional GitHub sync if enabled |
 

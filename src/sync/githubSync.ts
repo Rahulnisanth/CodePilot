@@ -23,6 +23,7 @@ const LOG_FILE_WARN_BYTES = 5 * 1024 * 1024; // 5 MB
 export class GitHubSync {
   private onSyncStart: (() => void) | null = null;
   private onSyncEnd: (() => void) | null = null;
+  private syncIntervalHandle: NodeJS.Timeout | null = null;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -41,17 +42,24 @@ export class GitHubSync {
    * Start the auto-sync interval (if enabled in settings).
    */
   startAutoSync(): void {
+    // Clear existing interval if it exists to prevent duplicates
+    if (this.syncIntervalHandle) {
+      clearInterval(this.syncIntervalHandle);
+    }
+
     const config = vscode.workspace.getConfiguration('codeBrainPro');
     if (!config.get<boolean>('syncEnabled', false)) return;
 
     const intervalHours = config.get<number>('syncFrequencyHours', 24);
     const intervalMs = intervalHours * 60 * 60 * 1000;
 
-    const handle = setInterval(() => this.syncNow(), intervalMs);
+    this.syncIntervalHandle = setInterval(() => this.syncNow(), intervalMs);
 
     this.context.subscriptions.push({
       dispose: () => {
-        clearInterval(handle);
+        if (this.syncIntervalHandle) {
+          clearInterval(this.syncIntervalHandle);
+        }
       },
     });
   }
@@ -81,10 +89,9 @@ export class GitHubSync {
       await this.ensureGlobalRepoExists(username, token);
       await this.pushDailyLog(username, token);
 
-      vscode.window.showInformationMessage(
-        'CodeBrainPro: Synced to GitHub code-brain-pro-logs.',
-      );
+      vscode.window.showInformationMessage('CodeBrainPro: Synced to GitHub.');
     } catch (error) {
+      console.error(error);
       vscode.window.showErrorMessage(
         `CodeBrainPro Sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
@@ -105,7 +112,7 @@ export class GitHubSync {
 
     try {
       await axios.get(apiUrl, { headers });
-    } catch (err: unknown) {
+    } catch (err: any) {
       if (axios.isAxiosError(err) && err.response?.status === 404) {
         await axios.post(
           'https://api.github.com/user/repos',
@@ -141,21 +148,20 @@ export class GitHubSync {
     const yearMonth = toYearMonth(today);
     const day = String(today.getDate()).padStart(2, '0');
 
+    // GitHub API requires forward slashes regardless of OS
     const filePath = `logs/${yearMonth}/${day}.json`;
 
     // Guard 1: Check raw file size before reading
     const logsDir = getLogsDir();
     const logFilePath = path.join(logsDir, `${dateStr}.json`);
 
-    if (fs.existsSync(logFilePath)) {
-      const { size } = fs.statSync(logFilePath);
-      if (size > LOG_FILE_WARN_BYTES) {
-        const sizeMb = (size / 1024 / 1024).toFixed(1);
-        console.warn(
-          `[CodeBrainPro] Log file is very large (${sizeMb} MB). ` +
-            'Only the most recent events will be synced.',
-        );
-      }
+    if (!fs.existsSync(logFilePath)) {
+      return; // Nothing to sync
+    }
+
+    const { size } = fs.statSync(logFilePath);
+    if (size > LOG_FILE_WARN_BYTES) {
+      console.warn(`[CodeBrainPro] Log file large: ${size} bytes`);
     }
 
     // Read real activity events from ~/.codeBrainPro/logs/YYYY-MM-DD.json
@@ -185,50 +191,29 @@ export class GitHubSync {
       2,
     );
 
-    // Guard 3: Final size assertion before encoding
-    const contentBytes = Buffer.byteLength(content, 'utf-8');
-    if (contentBytes > GITHUB_API_MAX_BYTES) {
-      // Should not happen after fitEventsToLimit, but be safe.
-      throw new Error(
-        `CodeBrainPro: Payload too large for GitHub API (${(contentBytes / 1024).toFixed(0)} KB). ` +
-          'Reduce the number of tracked events or increase sync frequency.',
-      );
-    }
-
-    const encodedContent = Buffer.from(content).toString('base64');
+    const encodedContent = Buffer.from(content, 'utf-8').toString('base64');
     const headers = this.getHeaders(token);
     const apiUrl = `https://api.github.com/repos/${username}/${GLOBAL_REPO_NAME}/contents/${filePath}`;
 
     try {
-      // Get existing SHA if file exists
       let sha: string | undefined;
       try {
         const existing = await axios.get(apiUrl, { headers });
         sha = existing.data.sha;
       } catch {
-        // File doesn't exist yet — no SHA needed
+        /* File is new */
       }
 
       await axios.put(
         apiUrl,
         {
-          message:
-            `CodeBrainPro: Activity log for ${dateStr} ` +
-            `(${events.length}/${allEvents.length} events${truncated ? ', truncated' : ''})`,
+          message: `CodeBrainPro: Activity log for ${dateStr}`,
           content: encodedContent,
           ...(sha ? { sha } : {}),
         },
         { headers },
       );
-
-      if (truncated) {
-        console.warn(
-          `[CodeBrainPro] Sync truncated: pushed ${events.length} of ${allEvents.length} events ` +
-            'to stay within GitHub API limits.',
-        );
-      }
     } catch (error) {
-      console.error('CodeBrainPro sync push error:', error);
       throw error;
     }
   }
@@ -241,23 +226,20 @@ export class GitHubSync {
     events: ActivityEvent[],
     dateStr: string,
   ): ActivityEvent[] {
-    // Estimate overhead for the wrapper object (date, syncedAt, counts, etc.)
-    const WRAPPER_OVERHEAD_BYTES = 512;
+    const WRAPPER_OVERHEAD_BYTES = 1024;
     const budget = GITHUB_API_MAX_BYTES - WRAPPER_OVERHEAD_BYTES;
 
-    // Work from the most recent events backwards
     const reversed = [...events].reverse();
     const selected: ActivityEvent[] = [];
-    let running = 2; // Opening `[` + closing `]`
+    let running = 2;
 
     for (const event of reversed) {
       const chunk = JSON.stringify(event);
-      const chunkBytes = Buffer.byteLength(chunk, 'utf-8') + 2; // +2 for `,\n`
+      const chunkBytes = Buffer.byteLength(chunk, 'utf-8') + 2;
       if (running + chunkBytes > budget && selected.length > 0) break;
       selected.unshift(event);
       running += chunkBytes;
     }
-
     return selected;
   }
 

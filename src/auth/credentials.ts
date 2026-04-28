@@ -58,14 +58,17 @@ export class CredentialsManager {
     }
 
     const token = await vscode.window.showInputBox({
-      prompt: 'Enter your GitHub Personal Access Token (PAT)',
-      placeHolder: 'github_pat_XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+      prompt:
+        'Enter your GitHub Personal Access Token (Classic) with all repo scopes enabled',
+      placeHolder: 'ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
       password: true,
       ignoreFocusOut: true,
     });
 
     if (!token) {
-      vscode.window.showErrorMessage('CodeBrainPro: GitHub PAT is required.');
+      vscode.window.showErrorMessage(
+        'CodeBrainPro: GitHub Personal Access Token (Classic) is required.',
+      );
       return null;
     }
 
@@ -163,7 +166,7 @@ export class CredentialsManager {
   }
 
   /**
-   * Clears all stored credentials (GitHub PAT + Gemini key).
+   * Clears all stored credentials (GitHub PAT (Classic) + Gemini key).
    */
   async clearCredentials(): Promise<void> {
     await this.secrets.clearAll();

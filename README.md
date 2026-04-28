@@ -21,17 +21,17 @@
 
 ## Features
 
-| Feature                      | Description                                                                                  |
-| ---------------------------- | -------------------------------------------------------------------------------------------- |
-| **Live Activity Tracking**   | Tracks edits and focus events in real time across all Git repos                              |
-| **AI Commit Classification** | Classifies commits as `feature`, `bugfix`, `refactor`, `docs`, `test`, or `chore` via Gemini |
-| **Smart Work Unit Grouping** | Clusters related commits into named logical tasks automatically                              |
-| **Report Generator**         | Daily / Weekly / Monthly / Appraisal reports with AI-written narratives                      |
-| **Natural Language Q&A**     | Ask questions like _"What did I work on this week?"_ directly in VS Code                     |
-| **Multi-Repo Support**       | Tracks all workspace folders and additional configured repo paths simultaneously             |
-| **Risk Detector**            | Warns when uncommitted changes grow large or stale                                           |
-| **GitHub Sync**              | Optionally pushes structured logs to a centralized `code-brain-pro-logs` GitHub repo         |
-| **Secure Credentials**       | GitHub PAT and Gemini API key stored in VS Code Secret Storage — never in plaintext          |
+| Feature                      | Description                                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| **Live Activity Tracking**   | Tracks edits and focus events in real time across all Git repos                               |
+| **AI Commit Classification** | Classifies commits as `feature`, `bugfix`, `refactor`, `docs`, `test`, or `chore` via Gemini  |
+| **Smart Work Unit Grouping** | Clusters related commits into named logical tasks automatically                               |
+| **Report Generator**         | Daily / Weekly / Monthly / Appraisal reports with AI-written narratives                       |
+| **Natural Language Q&A**     | Ask questions like _"What did I work on this week?"_ directly in VS Code                      |
+| **Multi-Repo Support**       | Tracks all workspace folders and additional configured repo paths simultaneously              |
+| **Risk Detector**            | Warns when uncommitted changes grow large or stale                                            |
+| **GitHub Sync**              | Optionally pushes structured logs to a centralized `code-brain-pro-logs` GitHub repo          |
+| **Secure Credentials**       | GitHub PAT (Classic) and Gemini API key stored in VS Code Secret Storage — never in plaintext |
 
 ---
 
@@ -57,7 +57,7 @@
 Run any sync action (`CodeBrainPro: Sync to GitHub Now`) and you'll be prompted for:
 
 - Your **GitHub username**
-- A **GitHub PAT** with `repo` scope → [create one here](https://github.com/settings/tokens)
+- A **GitHub Personal Access Token (Classic)** with all `repo` scopes → [create one here](https://github.com/settings/tokens)
 
 Credentials are stored securely in VS Code Secret Storage.
 
@@ -168,7 +168,7 @@ End date:   2026-03-31
 
 - **Source code** — never transmitted anywhere
 - **Commit messages + diff stats** — sent to Gemini API for classification (opt-in via key)
-- **GitHub PAT + Gemini key** — stored in VS Code Secret Storage only
+- **GitHub PAT (Classic) + Gemini key** — stored in VS Code Secret Storage only
 - **Activity logs** — stored locally at `~/.codeBrainPro/`, optionally synced to GitHub if enabled
 
 ---
