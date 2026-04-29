@@ -13,6 +13,7 @@ import { RISK_DETECTOR_POLL_INTERVAL_MS } from '../constants';
  */
 export class RiskDetector {
   private riskCounts = new Map<string, number>(); // repoPath -> risk count
+  private activeRisks: RiskEvent[] = [];
   private onRiskUpdate: ((count: number) => void) | null = null;
 
   constructor(
@@ -47,6 +48,13 @@ export class RiskDetector {
     return total;
   }
 
+  /**
+   * Returns the risk events detected in the most recent poll cycle.
+   */
+  getActiveRisks(): RiskEvent[] {
+    return [...this.activeRisks];
+  }
+
   private async checkRisks(): Promise<void> {
     const config = vscode.workspace.getConfiguration('codeBrainPro');
     const riskThresholdLines = config.get<number>('riskThresholdLines', 50);
@@ -54,6 +62,7 @@ export class RiskDetector {
 
     const repos = this.repoManager.getAll();
     let totalRisks = 0;
+    const currentRisks: RiskEvent[] = [];
 
     for (const repo of repos) {
       try {
@@ -88,13 +97,14 @@ export class RiskDetector {
             minutesSinceLastCommit,
             hasDeletedFiles,
           };
+          currentRisks.push(riskEvent);
 
           // Log the risk event
           const risksFile = path.join(getCodeBrainProDir(), 'risks.json');
           appendToJsonArray<RiskEvent>(risksFile, riskEvent);
 
           // Show VS Code warning
-          const message = `CodeBrainPro Risk: ${repo.repoName} has ${linesChanged} uncommitted lines for ${formatFullDuration(minutesSinceLastCommit)}m`;
+          const message = `CodeBrainPro Risk: ${repo.repoName} has ${linesChanged} uncommitted lines for ${formatFullDuration(minutesSinceLastCommit)}`;
           vscode.window
             .showWarningMessage(message, 'Open Source Control')
             .then((choice) => {
@@ -110,6 +120,7 @@ export class RiskDetector {
       }
     }
 
+    this.activeRisks = currentRisks;
     this.onRiskUpdate?.(totalRisks);
   }
 }

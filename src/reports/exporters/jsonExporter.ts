@@ -1,4 +1,4 @@
-import { ReportData } from '../reportBuilder';
+import { ReportData } from '../../types';
 
 /**
  * JSON exporter — machine-readable raw export for integrations.

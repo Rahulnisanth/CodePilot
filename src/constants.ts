@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as os from 'os';
-import { getCodeBrainProDir } from './utils/storage';
 
 /** Risk Detector Poll Interval */
 export const RISK_DETECTOR_POLL_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
@@ -18,28 +17,28 @@ export const LOG_FILE_WARN_BYTES = 5 * 1024 * 1024; // 5 MB
 export const MAX_PERSISTED_COMMITS = 50;
 
 /** Maximum number of recent commits exposed to the sidebar tree. */
-export const MAX_DISPLAY_COMMITS = 20;
+export const MAX_DISPLAY_COMMITS = 35;
 
 /** CodeBrainPro directory paths */
 export const CODE_BRAIN_PRO_DIR = path.join(os.homedir(), '.codeBrainPro');
 export const LOGS_DIR = path.join(CODE_BRAIN_PRO_DIR, 'logs');
 export const REPORTS_DIR = path.join(CODE_BRAIN_PRO_DIR, 'reports');
 
-/** Classifier Constants */
+/** Classifier cache file */
 export const CACHE_FILE = () =>
-  path.join(getCodeBrainProDir(), 'classifier-cache.json');
+  path.join(CODE_BRAIN_PRO_DIR, 'classifier-cache.json');
 
-/** Manages WorkSession lifecycle — detects session boundaries based on idle threshold. */
+/** Active time persistence file */
 export const ACTIVE_TIME_FILE = () =>
-  path.join(getCodeBrainProDir(), 'sidebar-active-time.json');
+  path.join(CODE_BRAIN_PRO_DIR, 'sidebar-active-time.json');
 
-/** Sidebar State Files */
+/** Sidebar commits persistence file */
 export const COMMITS_FILE = () =>
-  path.join(getCodeBrainProDir(), 'sidebar-commits.json');
+  path.join(CODE_BRAIN_PRO_DIR, 'sidebar-commits.json');
 
-/** Sidebar State Files */
+/** Sidebar work units persistence file */
 export const WORK_UNITS_FILE = () =>
-  path.join(getCodeBrainProDir(), 'sidebar-work-units.json');
+  path.join(CODE_BRAIN_PRO_DIR, 'sidebar-work-units.json');
 
 /** Secret Storage Keys */
 export const KEY_GITHUB_TOKEN = 'codeBrainPro.githubToken';

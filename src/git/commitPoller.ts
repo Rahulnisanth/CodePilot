@@ -139,6 +139,11 @@ export class CommitPoller {
         for (const commit of newCommits) {
           seen.add(commit.hash);
           const diffStat = await this.gitClient.getDiffStat(repo.repoPath);
+          const { linesAdded, linesRemoved } =
+            await this.gitClient.getCommitLineChanges(
+              repo.repoPath,
+              commit.hash,
+            );
           const record: CommitRecord = {
             hash: commit.hash,
             message: commit.message,
@@ -148,8 +153,8 @@ export class CommitPoller {
             repoPath: repo.repoPath,
             filesChanged: [],
             diffStat,
-            linesAdded: 0,
-            linesRemoved: 0,
+            linesAdded,
+            linesRemoved,
           };
           this.listeners.forEach((l) => l(record));
         }

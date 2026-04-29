@@ -1,7 +1,7 @@
 import { ActivityEvent, PersistedActiveTime, WorkSession } from '../types';
 import { generateUUID } from '../utils/uuid';
 import { toISO, toDateString } from '../utils/dateUtils';
-import { readJson, writeJson, getCodeBrainProDir } from '../utils/storage';
+import { readJson, writeJson } from '../utils/storage';
 import { ACTIVE_TIME_FILE } from '../constants';
 
 export class SessionManager {

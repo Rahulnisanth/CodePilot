@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { WorkUnit, CommitRecord, RiskEvent } from '../types';
-import { formatDuration } from '../utils/dateUtils';
+import { formatDuration, toDateString } from '../utils/dateUtils';
 import { SessionManager } from '../tracker/sessionManager';
 import { RepoManager } from '../repos/repoManager';
 import { TYPE_ICON } from '../constants';
@@ -166,9 +166,13 @@ export class CodeBrainProSidebarProvider implements vscode.TreeDataProvider<Tree
   private getTodayActivityItems(): TreeItem[] {
     const activeMinutes = this.sessionManager.getTotalActiveMinutesToday();
     const repos = this.repoManager.getAll().map((r) => r.repoName);
+    const today = toDateString();
+    const todayCommits = this.recentCommits.filter((c) => {
+      return c.timestamp && toDateString(new Date(c.timestamp)) === today;
+    });
     const items: TreeItem[] = [
       new ActivityItem('Active Time', formatDuration(activeMinutes)),
-      new ActivityItem('Commits Today', String(this.recentCommits.length)),
+      new ActivityItem('Commits Today', String(todayCommits.length)),
     ];
 
     if (repos.length > 0) {

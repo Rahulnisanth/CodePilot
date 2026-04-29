@@ -161,6 +161,7 @@ export async function activate(
   const riskDetector = new RiskDetector(context, gitClient, repoManager);
   riskDetector.start((totalRisks) => {
     statusBar.setRiskCount(totalRisks);
+    sidebarState.setRisks(riskDetector.getActiveRisks());
     sidebarProvider.refresh({ risks: sidebarState.getRisks() });
   });
 

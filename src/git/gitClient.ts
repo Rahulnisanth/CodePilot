@@ -199,4 +199,34 @@ export class GitClient {
       return null;
     }
   }
+
+  /**
+   * Get the number of lines added and removed for a specific commit.
+   */
+  async getCommitLineChanges(
+    cwd: string,
+    hash: string,
+  ): Promise<{ linesAdded: number; linesRemoved: number }> {
+    try {
+      const { stdout } = await execAsync(
+        `git show --numstat --format="" ${hash}`,
+        { cwd },
+      );
+      let linesAdded = 0;
+      let linesRemoved = 0;
+      stdout
+        .trim()
+        .split('\n')
+        .forEach((line) => {
+          const parts = line.split('\t');
+          const added = parseInt(parts[0], 10);
+          const removed = parseInt(parts[1], 10);
+          if (!isNaN(added)) linesAdded += added;
+          if (!isNaN(removed)) linesRemoved += removed;
+        });
+      return { linesAdded, linesRemoved };
+    } catch {
+      return { linesAdded: 0, linesRemoved: 0 };
+    }
+  }
 }

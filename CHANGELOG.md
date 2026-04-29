@@ -29,3 +29,13 @@
 - **refactor:** Consolidated scattered interface definitions (`CommitInfo`, `GroupResult`, `ReportData`, `RepoMetadata`, `PersistedActiveTime`) into `src/types.ts`
 - **refactor:** Removed inline constants from `gitClient.ts`, `classifier.ts`, `grouper.ts`, `riskDetector.ts`, `githubSync.ts`, `sidebarProvider.ts`, `sidebarState.ts`, `reportBuilder.ts`, `markdownExporter.ts`, `secrets.ts`, `storage.ts`, and `promptTemplates.ts` in favour of shared imports
 - **refactor:** Removed section-divider comments from `sessionManager.ts` and `sidebarState.ts`
+
+## 1.0.6 (2026-04-29)
+
+### Bug Fixes
+
+- **fix:** Resolved active time still resetting on refresh — root cause was a circular dependency between `constants.ts` and `storage.ts` that silently broke persistence file resolution
+- **fix:** Risk status now correctly reflected in the sidebar — `RiskDetector` exposes detected risks via `getActiveRisks()` and the extension callback feeds them to `SidebarStateManager` before refreshing
+- **fix:** Reports no longer show 0 lines changed — added `getCommitLineChanges()` to `GitClient` (uses `git show --numstat`) and `CommitPoller` now populates real `linesAdded`/`linesRemoved` values
+- **fix:** "Commits Today" count now filters by today's date instead of showing all recent commits (which could span up to 7 days)
+- **fix:** Updated `jsonExporter.ts` import to use centralized `ReportData` from `types.ts`
