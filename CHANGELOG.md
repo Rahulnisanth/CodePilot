@@ -69,3 +69,7 @@ CODE BRAIN PRO
 ## 1.0.9 (2026-05-09)
 
 - **fix:** Chat panel's send button no longer stays permanently disabled after single message and the button is re-enabled inside the `'history'` message handler
+
+## 1.2.0 (2026-05-09)
+
+- **feat** Added new sidebar icon and updated the file structure of UIs

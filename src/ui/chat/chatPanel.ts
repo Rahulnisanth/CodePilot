@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { AiReporter } from '../ai/reporter';
-import { WorkUnit } from '../types';
+import { AiReporter } from '../../ai/reporter';
+import { WorkUnit } from '../../types';
 
 /**
  * Natural Language Q&A Panel — allows devs to ask questions about their work.

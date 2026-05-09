@@ -1,12 +1,11 @@
-import * as path from 'path';
-import { CommitRecord, WorkUnit } from '../types';
-import { readJson, writeJson, getCodeBrainProDir } from '../utils/storage';
+import { CommitRecord, WorkUnit } from '../../types';
+import { readJson, writeJson } from '../../utils/storage';
 import {
   COMMITS_FILE,
   MAX_DISPLAY_COMMITS,
   MAX_PERSISTED_COMMITS,
   WORK_UNITS_FILE,
-} from '../constants';
+} from '../../constants';
 
 /**
  * Centralised in-memory + on-disk store for sidebar state.

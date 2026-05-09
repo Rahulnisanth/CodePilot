@@ -12,9 +12,9 @@ import { CommitGrouper } from './ai/grouper';
 import { AiReporter } from './ai/reporter';
 import { ReportManager } from './reports/reportManager';
 import { GitHubSync } from './sync/githubSync';
-import { CodeBrainProSidebarProvider } from './ui/sidebarProvider';
-import { SidebarStateManager } from './ui/sidebarState';
-import { ChatPanel } from './ui/chatPanel';
+import { CodeBrainProSidebarProvider } from './ui/sidebar/sidebarProvider';
+import { SidebarStateManager } from './ui/sidebar/sidebarState';
+import { ChatPanel } from './ui/chat/chatPanel';
 import { CommitRecord } from './types';
 import { ensureCodeBrainProDirs } from './utils/storage';
 

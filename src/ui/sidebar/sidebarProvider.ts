@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { WorkUnit } from '../types';
-import { TYPE_ICON } from '../constants';
+import { WorkUnit } from '../../types';
+import { TYPE_ICON } from '../../constants';
 
 type TreeItem = WorkUnitItem | ReportItem | SectionItem;
 
