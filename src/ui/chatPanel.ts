@@ -666,9 +666,13 @@ export class ChatPanel {
           const { type, history, answer, error } = event.data;
 
           if (type === 'history') {
+            removeTyping();
+            isWaiting = false;
+            sendBtn.disabled = !input.value.trim();
             messagesEl.innerHTML = '';
             if (!history || history.length === 0) return;
             history.forEach((entry) => appendMessage(entry.role, entry.content));
+            scrollToBottom();
           }
 
           // Backend-initiated reset (e.g. when show() is called with startFresh=true)

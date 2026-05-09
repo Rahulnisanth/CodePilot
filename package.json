@@ -2,7 +2,7 @@
   "name": "code-brain-pro",
   "displayName": "CodeBrainPro",
   "description": "AI-powered developer work-log, commit classifier, report generator, and productivity tracker. Automatically tracks, summarizes, and reports what you worked on.",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "icon": "assets/extension-icon.png",
   "publisher": "rahul-nisanth",
   "engines": {
@@ -162,7 +162,7 @@
           "id": "codeBrainProSidebar",
           "name": "Activity",
           "icon": "$(clock)",
-          "contextualTitle": "CODE BRAIN PRO"
+          "contextualTitle": "Code Brain Pro"
         }
       ]
     },

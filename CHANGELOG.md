@@ -62,3 +62,10 @@ CODE BRAIN PRO
 ### Docs
 
 - Updated `README.md`, `docs/guide.md`, and `docs/requirement.md` to reflect all removals
+
+## 1.0.8 (2026-05-09)
+
+### Bug Fixes
+
+- **fix:** Chat panel send button no longer stays permanently disabled after an error — `isWaiting` is now reset and the button re-enabled inside the `'history'` message handler (which is the only message type the backend ever posts), so users can send follow-up messages without reopening the panel
+- **fix:** GitHub sync no longer fails with a 404 error on first use — after `auto_init` repo creation, the sync engine now polls the Contents API with exponential back-off (`waitForRepoReady`) until the default branch is ready before pushing; additionally, the SHA-fetch error handler now only silently ignores true 404s (file not yet created) and surfaces all other errors (auth failures, rate limits, etc.)

@@ -124,6 +124,9 @@ export class GitHubSync {
         vscode.window.showInformationMessage(
           `CodeBrainPro: Created global repository '${GLOBAL_REPO_NAME}'.`,
         );
+        // GitHub initializes the repo (default branch + README) asynchronously.
+        // Wait until the Contents API is ready before we try to push.
+        await this.waitForRepoReady(username, token);
       } else {
         throw err;
       }
@@ -197,8 +200,12 @@ export class GitHubSync {
       try {
         const existing = await axios.get(apiUrl, { headers });
         sha = existing.data.sha;
-      } catch {
-        /* File is new */
+      } catch (shaErr: any) {
+        // 404 means the file doesn't exist yet — that's fine, we'll create it.
+        // Any other status (401, 403, 422…) is a real error; surface it.
+        if (!axios.isAxiosError(shaErr) || shaErr.response?.status !== 404) {
+          throw shaErr;
+        }
       }
 
       await axios.put(
@@ -238,6 +245,39 @@ export class GitHubSync {
       running += chunkBytes;
     }
     return selected;
+  }
+
+  /**
+   * Polls the GitHub Contents API until the newly-created repo is ready
+   * (i.e. the auto_init commit has landed and the default branch exists).
+   * Retries up to 8 times with exponential back-off (max ~16 s total).
+   */
+  private async waitForRepoReady(
+    username: string,
+    token: string,
+    maxAttempts = 8,
+  ): Promise<void> {
+    const headers = this.getHeaders(token);
+    const contentsUrl = `https://api.github.com/repos/${username}/${GLOBAL_REPO_NAME}/contents/`;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const delayMs = Math.min(1000 * 2 ** attempt, 8000);
+      await new Promise((r) => setTimeout(r, delayMs));
+
+      try {
+        await axios.get(contentsUrl, { headers });
+        return; // Repo is ready
+      } catch (err: any) {
+        if (!axios.isAxiosError(err) || err.response?.status !== 404) {
+          throw err; // Unexpected error — surface it
+        }
+        // Still 404 — repo not ready yet, keep retrying
+      }
+    }
+
+    throw new Error(
+      `CodeBrainPro: Timed out waiting for repository '${GLOBAL_REPO_NAME}' to initialize. Please try syncing again.`,
+    );
   }
 
   private getHeaders(token: string): Record<string, string> {
